@@ -5,7 +5,11 @@ import org.apache.commons.csv.CSVRecord;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -96,14 +100,14 @@ public class JobData {
         // load data, if not already loaded
         loadData();
 
-        // TODO - implement this method
+        Predicate<HashMap<String, String>> jobContainsValue = job -> job.values().stream()
+                .anyMatch(v -> v.toLowerCase().contains(value.toLowerCase()));
+
         ArrayList<HashMap<String, String>> jobs = allJobs.stream()
-                .filter(job ->
-                        job.values().stream()
-                                .anyMatch(jobValue -> jobValue.toLowerCase().contains(value.toLowerCase()))
-                )
+                .filter(jobContainsValue)
                 .distinct()
                 .collect(Collectors.toCollection(ArrayList::new));
+
         return jobs;
     }
 
